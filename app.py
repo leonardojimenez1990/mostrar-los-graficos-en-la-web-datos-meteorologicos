@@ -8,7 +8,7 @@ import numpy as np
 st.title("Изменение метеорологических величин в течение дня")
 
 # read data wich pandas librery
-file = pd.ExcelFile('leonardojimenez1990/leonardoejercicio1.xlsx')
+file = pd.ExcelFile('leonardoejercicio1.xlsx')
 df = file.parse('Hoja1', header=2,
                 names=['variables', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00'])
 
