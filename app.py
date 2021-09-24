@@ -9,7 +9,7 @@ st.title("Изменение метеорологических величин �
 
 # read data wich pandas librery
 #file = pd.ExcelFile('leonardoejercicio1.xlsx')
-file = pd.ExcelFile('https://github.com/leonardojimenez1990/leonardojimenez1990/leonardoejercicio1.xlsx?raw=True')
+file = pd.ExcelFile('https://github.com/leonardojimenez1990/leonardojimenez1990/blob/main/leonardoejercicio1.xlsx?raw=True')
 df = file.parse('Hoja1', header=2,
                 names=['variables', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00'])
 
