@@ -14,20 +14,21 @@ x_options = [
 select = st.sidebar.selectbox('Какую ценность вы хотите изучить?', x_options)
 if select == 'Изучение суточного хода основных метеорологических величин':
     # the web title
-    st.title("Изучение суточного хода основных метеорологических величин")
+    st.title('МЕТЕОРОЛОГИЯ И КЛИМАТОЛОГИЯ')
+    st.header("Изучение суточного хода основных метеорологических величин")
 
     # read data wich pandas librery
     file = pd.ExcelFile('leonardoejercicio1.xlsx')
     #file = pd.ExcelFile('https://github.com/leonardojimenez1990/leonardojimenez1990/blob/main/leonardoejercicio1.xlsx?raw=True')
     df = file.parse('Hoja1', header=2,
-                    names=['variables', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00'])
+                    names=['переменные', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00'])
 
-    nombreVariables = df['variables']
-    st.dataframe(df[0:].astype('str'), width=1024, height=720)
+    nombreVariables = df['переменные']
+    st.dataframe(df[0:].astype('str'), height=720)
 
     # realizar la transversal de los datos
     df = file.parse('Hoja1', header=2,
-                    names=['variables', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00']).T
+                    names=['переменные', '21:00', '00:00', '03:00', '06:00', '09:00', '12:00', '15:00', '18:00']).T
     df.columns = nombreVariables
     # st.dataframe(df[1:].astype('str'), width=1024, height=720)
 
@@ -63,7 +64,7 @@ if select == 'Изучение суточного хода основных ме
 
     # selectBox
     variable = ' '
-    variable = st.selectbox('выберите переменную', [' ', 'Температура почвы, °С', 'Температура воздуха, \n°С',
+    variable = st.selectbox(f'выберите переменную', ['выберите', 'Температура почвы, °С', 'Температура воздуха, \n°С',
                                                     "Относительная \nВлажность воздуха, %",
                                                     'Направление ветра, \nГрадусы',
                                                     'Атмосферное давление\nна уровне станции, гПа'])
@@ -205,15 +206,82 @@ if select == 'Изучение суточного хода основных ме
                                           "График также показывает возрастающее спад с 21:00 до 18:00. \n")
 
 
-else:
+
+elif select == 'Изучение межсуточной изменчивости основных метеорологических величин':
     # the web title
-    st.title("Изучение межсуточной изменчивости основных метеорологических величин")
+    st.title('МЕТЕОРОЛОГИЯ И КЛИМАТОЛОГИЯ')
+    st.header("Изучение межсуточной изменчивости основных метеорологических величин")
     # read data wich pandas librery
     file = pd.ExcelFile('leonardoejercicio1.xlsx')
     df = file.parse('Hoja2', header=1,
-                    names=['dias','temperatura media', 'temperatura máxima', 'temperatura mínima',
-                           'humedad minima', 'precision', 'precipitation'])
-    st.dataframe(df.iloc[:31,:].astype('str'))
+                    names=['Дни','Средняя Температура воздуха, °С', 'Максимальная Температура воздуха, °С',
+                           'Минимальная Температура воздуха, °С',  'Минимальная относительная влажность, %',
+                           'Атмосферное давление, гПа', 'Суточное количество осадков, мм'])
+    st.dataframe(df.iloc[:,:].astype('str'),height=500)
+
+    # salve data on variables
+    dias = df.iloc[0:31, 0]
+
+    tempAireMean = pd.to_numeric(df.loc[0:30,'Средняя Температура воздуха, °С' ], errors='coerce')
+
+    tempAireMax = pd.to_numeric(df.loc[0:30, 'Максимальная Температура воздуха, °С'], errors='coerce')
+
+    tempAireMin = pd.to_numeric(df.loc[0:30, 'Минимальная Температура воздуха, °С'], errors='coerce')
+
+    humedad = pd.to_numeric(df.loc[0:30, 'Минимальная относительная влажность, %'], errors='coerce')
+
+    presion = pd.to_numeric(df.loc[0:30, 'Атмосферное давление, гПа'], errors='coerce')
+
+    lluvia = pd.to_numeric(df.loc[0:30, 'Суточное количество осадков, мм'], errors='coerce')
+
+    #fig = px.area(df.iloc[0:31, 1:4], x=dias, y='Средняя Температура воздуха, °С',
+     #             hover_name='Средняя Температура воздуха, °С',
+      #            title=f'Средняя Температура воздуха, °С')
+    #st.plotly_chart(fig)
+    st.markdown(f'Средняя Температура воздуха, °С')
+    st.area_chart(df.iloc[0:31, 1:4], height= 400)
+
+
+    #fig = px.line(df.iloc[0:31, :], x=dias, y='Максимальная Температура воздуха, °С',
+     #             hover_name='Максимальная Температура воздуха, °С',
+      #            title=f'Максимальная Температура воздуха, °С')
+    #st.plotly_chart(fig)
+
+    #fig = px.line(df.iloc[0:31, :], x=dias, y='Минимальная Температура воздуха, °С',
+     #             hover_name='Минимальная Температура воздуха, °С',
+     #             title=f'Минимальная Температура воздуха, °С')
+    #st.plotly_chart(fig)
+
+    fig = px.bar(df.iloc[0:31, :], x=dias, y='Минимальная относительная влажность, %',
+                 color='Минимальная относительная влажность, %', height=600,
+                  hover_name='Минимальная относительная влажность, %',
+                  title=f'Минимальная относительная влажность, %')
+    st.plotly_chart(fig)
+
+    fig = px.line(df.iloc[0:31, :], x=dias, y='Атмосферное давление, гПа',
+                  hover_name='Атмосферное давление, гПа',
+                  title=f'Атмосферное давление, гПа')
+    st.plotly_chart(fig)
+
+    fig = px.bar(df.iloc[0:31, :], x=dias, y='Суточное количество осадков, мм',
+                  hover_name='Суточное количество осадков, мм',
+                  title=f'Суточное количество осадков, мм')
+    st.plotly_chart(fig)
+
+
+
+
+else:
+    # the web title
+    st.title('МЕТЕОРОЛОГИЯ И КЛИМАТОЛОГИЯ')
+    st.header('Изучение годового хода основных показателей климата')
+    # read data wich pandas librery
+    file = pd.ExcelFile('leonardoejercicio1.xlsx')
+    df = file.parse('Hoja3', header=1)
+                    #names=['Дни', 'Средняя Температура воздуха, °С', 'Максимальная Температура воздуха, °С',
+                     #      'Минимальная Температура воздуха, °С', 'Минимальная относительная влажность, %',
+                      #     'Атмосферное давление, гПа', 'Суточное количество осадков, мм'])
+    st.dataframe(df.iloc[:, :].astype('str'), height=500)
 
 # @st.cache()
 # def load_data():
@@ -221,25 +289,3 @@ else:
 #        'https://github.com/chris1610/pbpython/blob/master/data/cereal_data.csv?raw=True'
 #    )
 #    return df
-
-# df = px.data.wind()
-# st.dataframe(df)
-
-
-# fig.show()
-
-# Read in the cereal data
-# df = load_data()
-# st.dataframe(df)
-
-# st.title('Rating exploration')
-
-
-# plot the value
-# fig = px.line(df,
-#             x=x_axis,
-#            y='rating',
-#           hover_name='name',
-#          title=f'Cereal ratings vs. {x_axis}')
-
-# st.plotly_chart(fig)
